@@ -10,6 +10,12 @@ width_center = 10;
 chisel_x = 3;
 // Thickness of the chisel tip
 chisel_y = 1;
+// Pommel height
+pommel_z = 15;
+// Distance of edge of lanyard hole from end of pommel
+offset_l = 5;
+// Diamater of lanyard hole
+diameter_l = 10;
 // Length of shackle key
 length_s = 100;
 // Offset of shackle key from where shaft meets pommel
@@ -19,11 +25,11 @@ thickness_s = 6;
 // Eyelet outer diameter
 eyelet_od = 10;
 // Eyelet inner diameter
-eyelet_id = 6;
+eyelet_id = 6.5;
 // Eyelet shaft length
 eyelet_shaft_length = 2.5;
 // Eyelet shaft diameter
-eyelet_shaft_width = 7.5;
+eyelet_shaft_width = 6.75;
 
 // Epsilon to ensure no false borders
 eps = 0.01;
@@ -60,7 +66,7 @@ difference() {
     // pommel
     union() {
       // pommel hemisphere, -y side
-      translate([0, -width_center/2, 0]) scale([width_x/width_y, (width_y - width_center)/width_y, 1]) {
+      translate([0, -width_center/2, 0]) scale([width_x/width_y, (width_y - width_center)/width_y, 2*pommel_z/width_y]) {
         difference() {
           difference() {
             sphere(d=width_y);
@@ -72,7 +78,7 @@ difference() {
       }
 
       // pommel hemisphere, +y side
-      translate([0, width_center/2, 0]) rotate([180, 0, 0]) scale([width_x/width_y, (width_y - width_center)/width_y, 1]) {
+      translate([0, width_center/2, 0]) rotate([180, 0, 0]) scale([width_x/width_y, (width_y - width_center)/width_y, 2*pommel_z/width_y]) {
         difference() {
           difference() {
             sphere(d=width_y);
@@ -84,19 +90,26 @@ difference() {
       }
 
       // pommel flat
-      translate([0, width_center/2, 0]) rotate([90, 0, 0]) linear_extrude(width_center) scale([width_x/width_y, 1, 1]) difference() {
+      translate([0, width_center/2, 0]) rotate([90, 0, 0]) linear_extrude(width_center) scale([width_x/width_y, 2*pommel_z/width_y, 1]) difference() {
         circle(d=width_y);
         translate([0, width_y/2, 0]) square(width_y, center=true);
       }
       
       // pommel eyelet
-      difference() {
-        union() {
-          translate([0, 0, -eyelet_shaft_length - eyelet_od/2 - width_y/2]) scale(scale_inverse) cylinder(h=(scale_factor*(eyelet_shaft_length + eyelet_od)), d=scale_factor*eyelet_shaft_width);
-          translate([0, 0, -eyelet_shaft_length - width_y/2 - eyelet_od/2]) scale(scale_inverse) sphere(d=scale_factor*eyelet_od);
-        }
-        translate([0, 0, -eyelet_shaft_length - width_y/2 - eyelet_od/2]) rotate([90, 0, 0]) scale(scale_inverse) cylinder(h=scale_factor*eyelet_od, d=scale_factor*eyelet_id, center=true);
-      }
+      // difference() {
+      //   union() {
+      //     translate([0, 0, -eyelet_shaft_length - eyelet_od/2 - width_y/2]) scale(scale_inverse) cylinder(h=(scale_factor*(eyelet_shaft_length + eyelet_od)), d=scale_factor*eyelet_shaft_width);
+      //     translate([0, 0, -eyelet_shaft_length - width_y/2 - eyelet_od/2]) scale(scale_inverse) sphere(d=scale_factor*eyelet_od);
+      //   }
+      //   union() {
+      //     // eyelet hole
+      //     translate([0, 0, -eyelet_shaft_length - width_y/2 - eyelet_od/2]) rotate([90, 0, 0]) scale(scale_inverse) cylinder(h=scale_factor*eyelet_od, d=scale_factor*eyelet_id, center=true);
+      //     // rounding for eyelet hole, -y side
+      //     translate([0, -(eyelet_shaft_width + eyelet_id)/2, -eyelet_shaft_length - width_y/2 - eyelet_od/2]) scale(scale_inverse) sphere(d=scale_factor*eyelet_od);
+      //     // rounding for eyelet hole, +y side
+      //     translate([0, (eyelet_shaft_width + eyelet_id)/2, -eyelet_shaft_length - width_y/2 - eyelet_od/2]) scale(scale_inverse) sphere(d=scale_factor*eyelet_od);
+      //   }
+      // }
     }
   }
  
@@ -118,6 +131,16 @@ difference() {
         scale(scale_inverse) circle(d=scale_factor * scale_s * width_s);
         translate([-scale_s * width_s/2, 0, 0]) square(scale_s * width_s, center=true);
       }
+    }
+
+    // lanyard hole
+    union() {
+      // primary hole
+      translate([0, 0, -pommel_z + diameter_l/2 + offset_l]) rotate([90, 0, 0]) scale(scale_inverse) cylinder(d=scale_factor*diameter_l, h=scale_factor*width_y*2, center=true);
+      // roundover, -y side
+      // translate([0, 0.9*(-width_y + diameter_l), -pommel_z + diameter_l/2 + offset_l]) rotate([90, 0, 0]) linear_extrude(diameter_l, scale=3) scale(scale_inverse) circle(d=scale_factor*diameter_l);
+      // roundover, +y side
+      // translate([0, 0.9*(width_y - diameter_l), -pommel_z + diameter_l/2 + offset_l]) rotate([270, 0, 0]) linear_extrude(diameter_l, scale=3) scale(scale_inverse) circle(d=scale_factor*diameter_l);
     }
   }
 }

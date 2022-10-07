@@ -39,6 +39,8 @@ eps = 0.01;
 scale_factor = 20;
 scale_inverse = 1/scale_factor;
 
+use <src/base.scad>
+
 // Shackle key geometry
 tan_taper_y = 2*length/(width_y - chisel_y);
 deg_taper_y = atan(tan_taper_y);
@@ -60,72 +62,8 @@ scale_s = modified_width_s_top/width_s_base;
 
 difference() {
   union() {
-    // shaft
-    linear_extrude(length, scale=[chisel_x/width_x, chisel_y/width_y]) union() {
-      // shaft hemiellipse, -y side
-      translate([0, -width_center/2, 0]) scale([width_x/width_y, (width_y - width_center)/width_y, 1]) difference() {
-        circle(d=width_y);
-        translate([0, width_y/4, 0]) square([width_x, width_y/2], center=true);
-      }
-
-      // shaft hemiellipse, +y side
-      translate([0, width_center/2, 0]) rotate([180, 0, 0]) scale([width_x/width_y, (width_y - width_center)/width_y, 1]) difference() {
-        circle(d=width_y);
-        translate([0, width_y/4, 0]) square([width_x, width_y/2], center=true);
-      }
-
-      // shaft flat
-      square([width_x, width_center], center=true);
-    }
-
-    // pommel
-    union() {
-      // pommel hemisphere, -y side
-      translate([0, -width_center/2, 0]) scale([width_x/width_y, (width_y - width_center)/width_y, 2*pommel_z/width_y]) {
-        difference() {
-          difference() {
-            sphere(d=width_y);
-            translate([0, width_y/4, 0]) cube([width_x, width_y/2, width_x], center=true);
-          }
-          
-          translate([0, 0, width_y/2]) cube(width_y, center=true);
-        }
-      }
-
-      // pommel hemisphere, +y side
-      translate([0, width_center/2, 0]) rotate([180, 0, 0]) scale([width_x/width_y, (width_y - width_center)/width_y, 2*pommel_z/width_y]) {
-        difference() {
-          difference() {
-            sphere(d=width_y);
-            translate([0, width_y/4, 0]) cube([width_x, width_y/2, width_x], center=true);
-          }
-          
-          translate([0, 0, -width_y/2]) cube(width_y, center=true);
-        }
-      }
-
-      // pommel flat
-      translate([0, width_center/2, 0]) rotate([90, 0, 0]) linear_extrude(width_center) scale([width_x/width_y, 2*pommel_z/width_y, 1]) difference() {
-        circle(d=width_y);
-        translate([0, width_y/2, 0]) square(width_y, center=true);
-      }
-      
-      // pommel eyelet
-      // difference() {
-      //   union() {
-      //     translate([0, 0, -eyelet_shaft_length - eyelet_od/2 - width_y/2]) scale(scale_inverse) cylinder(h=(scale_factor*(eyelet_shaft_length + eyelet_od)), d=scale_factor*eyelet_shaft_width);
-      //     translate([0, 0, -eyelet_shaft_length - width_y/2 - eyelet_od/2]) scale(scale_inverse) sphere(d=scale_factor*eyelet_od);
-      //   }
-      //   union() {
-      //     // eyelet hole
-      //     translate([0, 0, -eyelet_shaft_length - width_y/2 - eyelet_od/2]) rotate([90, 0, 0]) scale(scale_inverse) cylinder(h=scale_factor*eyelet_od, d=scale_factor*eyelet_id, center=true);
-      //     // rounding for eyelet hole, -y side
-      //     translate([0, -(eyelet_shaft_width + eyelet_id)/2, -eyelet_shaft_length - width_y/2 - eyelet_od/2]) scale(scale_inverse) sphere(d=scale_factor*eyelet_od);
-      //     // rounding for eyelet hole, +y side
-      //     translate([0, (eyelet_shaft_width + eyelet_id)/2, -eyelet_shaft_length - width_y/2 - eyelet_od/2]) scale(scale_inverse) sphere(d=scale_factor*eyelet_od);
-      //   }
-      // }
-    }
+    shaft(length, width_x, width_y, width_center, chisel_x, chisel_y);
+    pommel(pommel_z, width_x, width_y, width_center);
   }
  
   // all holes

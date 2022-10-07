@@ -39,7 +39,8 @@ eps = 0.01;
 scale_factor = 20;
 scale_inverse = 1/scale_factor;
 
-use <src/base.scad>
+use <lib/base.scad>
+use <lib/lanyard.scad>
 
 // Shackle key geometry
 tan_taper_y = 2*length/(width_y - chisel_y);
@@ -68,32 +69,25 @@ difference() {
  
   // all holes
   union() {
-    // shackle key
-    translate([0, 0, radius_s_base - roundover_s_base_offset]) union() {
-      // shackle key rectangular cutout
-      translate([0, 0, offset_s]) linear_extrude(length_s_straight, scale=[1, scale_s]) square([width_x, width_s_base], center=true);
+    // // shackle key
+    // translate([0, 0, radius_s_base - roundover_s_base_offset]) union() {
+    //   // shackle key rectangular cutout
+    //   translate([0, 0, offset_s]) linear_extrude(length_s_straight, scale=[1, scale_s]) square([width_x, width_s_base], center=true);
 
-      // shackle key semicircular cutout, -z side
-      translate([-width_x/2, 0, offset_s + roundover_s_base_offset + eps]) rotate([0, 90, 0]) linear_extrude(width_x) difference() {
-        scale(scale_inverse) circle(r=scale_factor * radius_s_base);
-        translate([-radius_s_base, 0, 0]) square(2*radius_s_base, center=true);
-      }
+    //   // shackle key semicircular cutout, -z side
+    //   translate([-width_x/2, 0, offset_s + roundover_s_base_offset + eps]) rotate([0, 90, 0]) linear_extrude(width_x) difference() {
+    //     scale(scale_inverse) circle(r=scale_factor * radius_s_base);
+    //     translate([-radius_s_base, 0, 0]) square(2*radius_s_base, center=true);
+    //   }
 
-      // shackle key semicircular cutout, +z side
-      translate([width_x/2, 0, offset_s + length_s_straight - roundover_s_top_offset - eps]) rotate([0, 270, 0]) linear_extrude(width_x) difference() {
-        scale(scale_inverse) circle(r=scale_factor * radius_s_top);
-        translate([-radius_s_top, 0, 0]) square(2*radius_s_top, center=true);
-      }
-    }
+    //   // shackle key semicircular cutout, +z side
+    //   translate([width_x/2, 0, offset_s + length_s_straight - roundover_s_top_offset - eps]) rotate([0, 270, 0]) linear_extrude(width_x) difference() {
+    //     scale(scale_inverse) circle(r=scale_factor * radius_s_top);
+    //     translate([-radius_s_top, 0, 0]) square(2*radius_s_top, center=true);
+    //   }
+    // }
 
     // lanyard hole
-    union() {
-      // primary hole
-      translate([0, 0, -pommel_z + diameter_l/2 + offset_l]) rotate([90, 0, 0]) scale(scale_inverse) cylinder(d=scale_factor*diameter_l, h=scale_factor*width_y*2, center=true);
-      // roundover, -y side
-      // translate([0, 0.9*(-width_y + diameter_l), -pommel_z + diameter_l/2 + offset_l]) rotate([90, 0, 0]) linear_extrude(diameter_l, scale=3) scale(scale_inverse) circle(d=scale_factor*diameter_l);
-      // roundover, +y side
-      // translate([0, 0.9*(width_y - diameter_l), -pommel_z + diameter_l/2 + offset_l]) rotate([270, 0, 0]) linear_extrude(diameter_l, scale=3) scale(scale_inverse) circle(d=scale_factor*diameter_l);
-    }
+    lanyard(pommel_z, diameter_l, offset_l, width_y);
   }
 }

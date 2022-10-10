@@ -11,7 +11,7 @@ diameter_lanyard = 10;
 offset_lanyard = 5;
 
 module lanyard(length_pommel, diameter_lanyard, offset_lanyard, base_width_marlinespike) {
-  translate([0, 0, -length_pommel + diameter_lanyard/2 + offset_lanyard]) rotate([90, 0, 0]) cylinder(d=diameter_lanyard, h=base_width_marlinespike*2, center=true);
+  rotate([0, 0, 90]) translate([0, 0, -length_pommel + diameter_lanyard/2 + offset_lanyard]) rotate([90, 0, 0]) cylinder(d=diameter_lanyard, h=base_width_marlinespike*2, center=true);
 }
 
 lanyard(length_pommel, diameter_lanyard, offset_lanyard, base_width_marlinespike);

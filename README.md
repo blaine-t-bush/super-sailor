@@ -1,4 +1,4 @@
-The ultimate sailor's tool: a combined fid, marlinespike, shackle key, and splicing tool.
+The ultimate sailor's tool: a combined fid, marlinspike, shackle key, and splicing tool.
 
 # Modelling
 

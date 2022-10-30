@@ -7,15 +7,15 @@ width_y = 20;
 // Width of the center flat
 width_center = 10;
 // Width of the chisel tip
-chisel_x = 4;
+chisel_x = 1;
 // Thickness of the chisel tip
-chisel_y = 1;
+chisel_y = 4;
 // Pommel height
 pommel_z = 15;
 // Distance of edge of lanyard hole from end of pommel
 offset_l = 5;
 // Diamater of lanyard hole
-diameter_l = 10;
+diameter_l = 8;
 // Length of shackle key (may end up being set lower if thickness is too large)
 desired_length_s = 80;
 // Offset of shackle key from where shaft meets pommel
@@ -27,7 +27,7 @@ desired_length_p = 60;
 // Offset of splicing tool from end of shackle key
 offset_p = 2;
 // Thickness of tool around splicing tool
-thickness_p = 4;
+thickness_p = 3.5;
 // Length of material to trim from tip
 trim = 0;
 

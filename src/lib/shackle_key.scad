@@ -34,32 +34,30 @@ module shackle_key(length_shaft, base_width_fid, base_width_marlinspike, chisel_
   width_s_base = max(base_width_marlinspike - 2*(offset/tan_taper_y + thickness/sin_taper_y), 0);
   width_s_top = max(base_width_marlinspike - 2*((length_s + offset)/tan_taper_y + thickness/sin_taper_y), 0);
 
-  radius_s_base = sqrt((width_s_base*width_s_base/4) * tan_taper_const);
-  radius_s_top = sqrt((width_s_top*width_s_top/4) * tan_taper_const);
-  offset_base = sqrt(radius_s_base*radius_s_base - (width_s_base*width_s_base/4));
-  offset_top = sqrt(radius_s_top*radius_s_top - (width_s_top*width_s_top/4));
+  radius_s_base = sqrt((width_s_base/2)^2 * tan_taper_const);
+  radius_s_top = sqrt((width_s_top/2)^2 * tan_taper_const);
   roundover_s_base_offset = sqrt(radius_s_base^2 - (width_s_base/2)^2);
   roundover_s_top_offset = sqrt(radius_s_top^2 - (width_s_top/2)^2);
 
-  length_s_straight = length_s - roundover_s_base_offset - roundover_s_top_offset; // length of just the straight part of shackle key (i.e. not including semicircular cutouts at each end)
-  modified_width_s_top = base_width_marlinspike - 2*((length_s_straight + offset)/tan_taper_y + thickness/sin_taper_y);
+  length_s_straight = length_s - radius_s_base - roundover_s_base_offset - radius_s_top - roundover_s_top_offset; // length of just the straight part of shackle key (i.e. not including semicircular cutouts at each end)
+  modified_width_s_top = max(base_width_marlinspike - 2*((length_s_straight + offset)/tan_taper_y + thickness/sin_taper_y), 3.2);
   scale_s = modified_width_s_top/width_s_base;
-
+  modified_length_s_straight = tan_taper_y*(-0.5*(modified_width_s_top - base_width_marlinspike) - thickness/sin_taper_y) - offset;
 
   translate([0, 0, radius_s_base - roundover_s_base_offset]) union() {
     // rectangular cutout
-    translate([0, 0, offset]) linear_extrude(length_s_straight, scale=[1, scale_s]) square([base_width_fid, width_s_base], center=true);
+    translate([0, 0, offset]) linear_extrude(modified_length_s_straight, scale=[1, scale_s]) square([base_width_fid, width_s_base], center=true);
 
     // semicircular cutout, -z side
     translate([-base_width_fid/2, 0, offset + roundover_s_base_offset + eps]) rotate([0, 90, 0]) linear_extrude(base_width_fid) difference() {
-      circle(r=radius_s_base, $fn=100);
-      translate([-radius_s_base, 0, 0]) square(2*radius_s_base, center=true);
+      circle(d=width_s_base, $fn=100);
+      translate([-width_s_base/2, 0, 0]) square(width_s_base, center=true);
     }
 
     // semicircular cutout, +z side
-    translate([base_width_fid/2, 0, offset + length_s_straight - roundover_s_top_offset - eps]) rotate([0, 270, 0]) linear_extrude(base_width_fid) difference() {
-      circle(r=radius_s_top, $fn=100);
-      translate([-radius_s_top, 0, 0]) square(2*radius_s_top, center=true);
+    translate([base_width_fid/2, 0, offset + modified_length_s_straight - roundover_s_top_offset - eps]) rotate([0, 270, 0]) linear_extrude(base_width_fid) difference() {
+      circle(d=modified_width_s_top, $fn=100);
+      translate([-modified_width_s_top/2, 0, 0]) square(modified_width_s_top, center=true);
     }
   }
 }

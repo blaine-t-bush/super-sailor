@@ -30,6 +30,10 @@ offset_p = 2;
 thickness_p = 3.5;
 // Length of material to trim from tip
 trim = 0;
+// Length of blood grove
+groove_length = 40;
+// Diameter of blood groove
+groove_diameter = 1;
 
 use <lib/lanyard.scad>
 use <lib/pommel.scad>
@@ -49,6 +53,13 @@ difference() {
     shackle_key(length, width_x, width_y, chisel_y, desired_length_s, offset_s, thickness_s);
     splicing_tool(length, width_x, width_y, chisel_x, desired_length_p, offset_p + offset_s + desired_length_s, thickness_p);
     lanyard(pommel_z, diameter_l, offset_l, width_y);
+    // groove(length, width_y, chisel_y, groove_length, groove_diameter);
     translate([0, 0, width_x/2 + length - trim]) cube(width_x, center=true); // remove some material from tip of tool
   }
 }
+
+// add hardpoints for cnc
+// hardpoint_diameter = 10;
+// hardpoint_length = 30;
+// translate([0, 0, -pommel_z - hardpoint_length + 2]) cylinder(d=10, h=30);
+// translate([0, 0, length - 30]) cylinder(d=10, h=30);

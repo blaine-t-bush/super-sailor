@@ -34,8 +34,8 @@ trim = 0;
 groove_length = 40;
 // Diameter of blood groove
 groove_diameter = 1;
-// Diameter of ballooned hole at base of shackle key
-diameter_s_e = 0;
+// Diameter difference of ballooned opening at base of shackle key from default shackle key size at base.
+extra_diameter_balloon = 2;
 
 use <lib/lanyard.scad>
 use <lib/pommel.scad>
@@ -53,9 +53,10 @@ difference() {
   // holes and grooves
   union() {
     shackle_key(length, width_x, width_y, chisel_y, desired_length_s, offset_s, thickness_s);
+    shackle_key_ballooning(length, width_x, width_y, chisel_y, desired_length_s, offset_s, thickness_s, extra_diameter_balloon);
     splicing_tool(length, width_x, width_y, chisel_x, desired_length_p, offset_p + offset_s + desired_length_s, thickness_p);
     lanyard(pommel_z, diameter_l, offset_l, width_y);
-    translate([-width_x/2, 0, diameter_s_e/2]) rotate([0, 90, 0]) linear_extrude(width_x) circle(d=diameter_s_e); // add ballooned hole at base of shackle key
+    // translate([-width_x/2, 0, diameter_s_e/2]) rotate([0, 90, 0]) linear_extrude(width_x) circle(d=diameter_s_e); // add ballooned hole at base of shackle key
     // groove(length, width_y, chisel_y, groove_length, groove_diameter);
     translate([0, 0, width_x/2 + length - trim]) cube(width_x, center=true); // remove some material from tip of tool
   }
